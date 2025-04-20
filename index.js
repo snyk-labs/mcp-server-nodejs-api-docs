@@ -111,7 +111,6 @@ function createModuleTool(module) {
       method: z.string().optional()
     },
     async (params) => {
-      const moduleNameParam = params?.module;
       logger.info({ msg: `Tool execution started: ${toolName}`, params });
       try {
         const content = createModuleDocumentation(module);

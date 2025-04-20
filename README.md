@@ -8,7 +8,7 @@ This project implements a Model Context Protocol (MCP) server that provides acce
 *   Provides MCP tools to query documentation for specific modules, classes, or methods.
 *   Offers a search tool (`node-search`) to find modules or list all available modules with their methods.
 *   Offers a list tool (`node-list`) to get a summary of all available modules.
-*   Logs activity and errors to `/tmp/mcp.log` using `pino`.
+*   Logs activity and errors to `/tmp/mcp-server-nodejs-docs.log` using `pino`.
 
 ## Installation
 
@@ -38,13 +38,13 @@ The server will initialize, fetch the documentation, create the necessary tools,
 The server logs detailed information about its operations, including fetches, tool executions, and errors, to the following file:
 
 ```
-/tmp/mcp.log
+/tmp/mcp-server-nodejs-docs.log
 ```
 
 You can monitor this file to debug issues:
 
 ```bash
-tail -f /tmp/mcp.log
+tail -f /tmp/mcp-server-nodejs-docs.log
 ```
 
 ### Testing with MCP Inspector

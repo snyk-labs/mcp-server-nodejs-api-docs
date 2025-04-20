@@ -5,8 +5,11 @@ import fetch from 'node-fetch';
 import pino from 'pino';
 
 // --- Logging Setup ---
-// Initialize pino logger to write to /tmp/mcp.log
-const logger = pino('/tmp/mcp.log');
+// Define the log file path
+const logFilePath = '/tmp/mcp-server-nodejs-docs.log';
+
+// Initialize pino logger to write to the defined file path
+const logger = pino(logFilePath);
 // --- End Logging Setup ---
 
 
@@ -32,7 +35,6 @@ async function fetchNodeApiDocs() {
     }
     const data = await response.json();
     logger.info('Successfully fetched Node.js API documentation', { url });
-    logger.debug('API Docs data sample', { modulesCount: data?.modules?.length }); // Log a debug sample
     return data;
   } catch (error) {
     // Pino automatically logs error objects well
@@ -229,7 +231,7 @@ async function initializeServer() {
     
   } catch (error) {
     logger.error({ err: error }, 'Failed to initialize server');
-    console.error('Fatal error during server initialization. Check /tmp/mcp.log for details.');
+    console.error(`Fatal error during server initialization. Check ${logFilePath} for details.`);
     process.exit(1);
   }
 }
@@ -250,7 +252,7 @@ process.on('SIGTERM', () => {
 
 process.on('uncaughtException', (error) => {
   logger.fatal({ err: error }, 'Uncaught Exception');
-  console.error('Uncaught Exception! Check /tmp/mcp.log. Shutting down...');
+  console.error(`Uncaught Exception! Check ${logFilePath}. Shutting down...`);
   // Attempt to flush logs, then exit. Pino might exit before flush completes.
   // Consider pino.final for guaranteed flushing.
   logger.flush(); // Attempt synchronous flush
@@ -260,7 +262,7 @@ process.on('uncaughtException', (error) => {
 
 process.on('unhandledRejection', (reason, promise) => {
   logger.fatal({ reason, promise }, 'Unhandled Rejection');
-  console.error('Unhandled Rejection! Check /tmp/mcp.log. Shutting down...');
+  console.error(`Unhandled Rejection! Check ${logFilePath}. Shutting down...`);
   // Attempt to flush logs, then exit.
   logger.flush(); // Attempt synchronous flush
   process.exit(1);

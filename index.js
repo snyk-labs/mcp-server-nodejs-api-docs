@@ -14,7 +14,7 @@ const logLevel = process.argv.includes('--debug') ? 'debug' : 'info';
 // Initialize pino logger with level and destination
 const logger = pino({ level: logLevel }, pino.destination(logFilePath));
 
-logger.info(`Logger initialized with level: ${logLevel}. Logging to: ${logFilePath}`);
+logger.info({ msg: `Logger initialized with level: ${logLevel}. Logging to: ${logFilePath}` });
 // --- End Logging Setup ---
 
 
@@ -27,11 +27,11 @@ const server = new McpServer({
     tools: {},
   },
 });
-logger.info('MCP Server instance created', { name: server.name, version: server.version });
+logger.info({ msg: 'MCP Server instance created', name: server.name, version: server.version });
 
 // Function to fetch Node.js API documentation
 async function fetchNodeApiDocs() {
-  logger.info('Fetching Node.js API documentation...');
+  logger.info({ msg: 'Fetching Node.js API documentation...' });
   const url = 'https://nodejs.org/docs/latest/api/all.json';
   try {
     const response = await fetch(url);
@@ -39,11 +39,11 @@ async function fetchNodeApiDocs() {
       throw new Error(`HTTP error! status: ${response.status} ${response.statusText}`);
     }
     const data = await response.json();
-    logger.info('Successfully fetched Node.js API documentation', { url });
+    logger.info({ msg: 'Successfully fetched Node.js API documentation', url });
     return data;
   } catch (error) {
     // Pino automatically logs error objects well
-    logger.error({ err: error }, `Failed to fetch Node.js API documentation: ${url}`);
+    logger.error({ err: error, msg: `Failed to fetch Node.js API documentation: ${url}` });
     throw error; // Re-throw to be caught by initializeServer
   }
 }
@@ -102,7 +102,7 @@ function createModuleTool(module) {
 
   // Replace any non-alphanumeric character with a dash
   const toolName = `node-${name.toLowerCase().replace(/[^a-zA-Z0-9]/g, '-')}`;
-  logger.debug('Creating tool for module:', { toolName });
+  logger.debug({ toolName, msg: 'Creating tool for module:' });
 
   server.tool(
     toolName,
@@ -112,13 +112,13 @@ function createModuleTool(module) {
     },
     async (params) => {
       const moduleNameParam = params?.module;
-      logger.info(`Tool execution started: ${toolName}`, { params });
+      logger.info({ msg: `Tool execution started: ${toolName}`, params });
       try {
         const content = createModuleDocumentation(module);
-        logger.info(`Tool execution successful: ${toolName}`);
+        logger.info({ msg: `Tool execution successful: ${toolName}` });
         return { content: [{ type: "text", text: content }] };
       } catch (error) {
-        logger.error({ err: error, params }, `Tool execution failed: ${toolName}`);
+        logger.error({ err: error, params, msg: `Tool execution failed: ${toolName}` });
         throw error;
       }
     }
@@ -142,21 +142,21 @@ function findModuleByName(modules, searchName) {
 
 // Initialize the server with Node.js API documentation
 async function initializeServer() {
-  logger.info('Initializing server...');
+  logger.info({ msg: 'Initializing server...' });
   try {
     const apiDocs = await fetchNodeApiDocs();
     
     // Remove from the apiDocs.modules any entries that don't have a Class or Method
     const originalCount = apiDocs.modules?.length;
     apiDocs.modules = apiDocs.modules.filter(module => module?.classes?.length > 0 || module?.methods?.length > 0);
-    logger.info('Filtered modules', { originalCount, filteredCount: apiDocs.modules?.length });
+    logger.info({ msg: 'Filtered modules', originalCount, filteredCount: apiDocs.modules?.length });
     
     
     // Create tools for each module
     apiDocs.modules.forEach(module => {
       createModuleTool(module);
     });
-    logger.info(`Created ${apiDocs.modules?.length} module tools.`);
+    logger.info({ msg: `Created ${apiDocs.modules?.length} module tools.` });
     
     // Add a search tool that finds modules by name or lists all if no name is provided
     const searchToolName = "node-search";
@@ -165,7 +165,7 @@ async function initializeServer() {
       { module: z.string().optional() },
       async (params) => {
         const moduleName = params?.module;
-        logger.info(`Tool execution started: ${searchToolName}`, { params });
+        logger.info({ msg: `Tool execution started: ${searchToolName}`, params });
         let foundModule = null;
         if (moduleName) {
           foundModule = findModuleByName(apiDocs.modules, moduleName);
@@ -194,17 +194,17 @@ async function initializeServer() {
             listContent += `\n`;
           });
           
-          logger.info(`Tool execution successful: ${searchToolName} (module not found or not specified, returning list)`);
+          logger.info({ msg: `Tool execution successful: ${searchToolName} (module not found or not specified, returning list)` });
           return { content: [{ type: "text", text: listContent }] };
         }
         
         // Module found, return its full documentation
         const content = createModuleDocumentation(foundModule);
-        logger.info(`Tool execution successful: ${searchToolName} (found module: ${foundModule.name})`);
+        logger.info({ msg: `Tool execution successful: ${searchToolName} (found module: ${foundModule.name})` });
         return { content: [{ type: "text", text: content }] };
       }
     );
-    logger.info('Created tool:', { toolName: searchToolName });
+    logger.info({ msg: 'Created tool:', toolName: searchToolName });
 
     // Add a tool to list all available modules
     const listToolName = "node-list";
@@ -212,7 +212,7 @@ async function initializeServer() {
       listToolName,
       {},
       async () => {
-        logger.info(`Tool execution started: ${listToolName}`);
+        logger.info({ msg: `Tool execution started: ${listToolName}` });
         const modules = apiDocs.modules.map(module => ({
           name: module.name,
           displayName: module.displayName || module.textRaw,
@@ -222,20 +222,20 @@ async function initializeServer() {
         const content = `# Available Node.js Modules\n\n${modules.map(m => 
           `## ${m.displayName}\n*Name:* ${m.name}\n*Description:* ${formatContent(m.description)}\n`
         ).join('\n')}`;
-        logger.info(`Tool execution successful: ${listToolName}`);
+        logger.info({ msg: `Tool execution successful: ${listToolName}` });
         return { content: [{ type: "text", text: content }] };
       }
     );
-    logger.info('Created tool:', { toolName: listToolName });
+    logger.info({ msg: 'Created tool:', toolName: listToolName });
 
     // Start receiving messages on stdin and sending messages on stdout
     const transport = new StdioServerTransport();
-    logger.info('Connecting transport...');
+    logger.info({ msg: 'Connecting transport...' });
     await server.connect(transport);
-    logger.info('Server connected to transport. Ready.');
+    logger.info({ msg: 'Server connected to transport. Ready.' });
     
   } catch (error) {
-    logger.error({ err: error }, 'Failed to initialize server');
+    logger.error({ err: error, msg: 'Failed to initialize server' });
     console.error(`Fatal error during server initialization. Check ${logFilePath} for details.`);
     process.exit(1);
   }
@@ -243,20 +243,20 @@ async function initializeServer() {
 
 // Graceful shutdown
 process.on('SIGINT', () => {
-  logger.info('Received SIGINT. Shutting down...');
+  logger.info({ msg: 'Received SIGINT. Shutting down...' });
   // Pino typically handles flushing on exit, especially for file streams.
   // Explicit flush can be added if needed: logger.flush()
   process.exit(0);
 });
 
 process.on('SIGTERM', () => {
-  logger.info('Received SIGTERM. Shutting down...');
+  logger.info({ msg: 'Received SIGTERM. Shutting down...' });
   // Pino typically handles flushing on exit.
   process.exit(0);
 });
 
 process.on('uncaughtException', (error) => {
-  logger.fatal({ err: error }, 'Uncaught Exception');
+  logger.fatal({ err: error, msg: 'Uncaught Exception' });
   console.error(`Uncaught Exception! Check ${logFilePath}. Shutting down...`);
   // Attempt to flush logs, then exit. Pino might exit before flush completes.
   // Consider pino.final for guaranteed flushing.
@@ -266,7 +266,7 @@ process.on('uncaughtException', (error) => {
 });
 
 process.on('unhandledRejection', (reason, promise) => {
-  logger.fatal({ reason, promise }, 'Unhandled Rejection');
+  logger.fatal({ reason, promise, msg: 'Unhandled Rejection' });
   console.error(`Unhandled Rejection! Check ${logFilePath}. Shutting down...`);
   // Attempt to flush logs, then exit.
   logger.flush(); // Attempt synchronous flush

@@ -47,6 +47,20 @@ You can monitor this file to debug issues:
 tail -f /tmp/mcp.log
 ```
 
+### Testing with MCP Inspector
+
+Use the built-in `debug` script:
+
+```bash
+npm run debug
+```
+
+Or directly via `npx`:
+
+```bash
+npx -y @modelcontextprotocol/inspector node index.js
+```
+
 ## Connecting to MCP Clients
 
 This server communicates over standard input/output (stdio). To connect it to MCP clients like Cursor or Qodo AI, you need to configure the client to launch the server using its command.

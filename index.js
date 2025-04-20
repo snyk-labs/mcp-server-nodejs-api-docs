@@ -8,8 +8,13 @@ import pino from 'pino';
 // Define the log file path
 const logFilePath = '/tmp/mcp-server-nodejs-docs.log';
 
-// Initialize pino logger to write to the defined file path
-const logger = pino(logFilePath);
+// Determine log level based on command line arguments
+const logLevel = process.argv.includes('--debug') ? 'debug' : 'info';
+
+// Initialize pino logger with level and destination
+const logger = pino({ level: logLevel }, pino.destination(logFilePath));
+
+logger.info(`Logger initialized with level: ${logLevel}. Logging to: ${logFilePath}`);
 // --- End Logging Setup ---
 
 

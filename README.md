@@ -33,6 +33,12 @@ npm run start
 
 The server will initialize, fetch the documentation, create the necessary tools, and then listen for connections over standard input/output (stdio).
 
+To enable debug logging, start the server with the `--debug` flag:
+
+```bash
+node index.js --debug
+```
+
 ## Debugging
 
 The server logs detailed information about its operations, including fetches, tool executions, and errors, to the following file:

@@ -18,11 +18,11 @@ This project implements a Model Context Protocol (MCP) server that provides acce
     cd <repository_directory>
     ```
 2.  **Install dependencies:**
-    This project uses the `@modelcontextprotocol/sdk` and `zod`.
+
     ```bash
     npm install
     ```
-    *(Assuming you have Node.js and npm installed)*
+
 
 ## Usage
 

@@ -1,0 +1,32 @@
+{
+  "name": "mcp-server-nodejs-docs",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "description": "A MCP server that provides documentation for Node.js core modules API",
+  "scripts": {
+    "start": "node index.js",
+    "debug": "npx @modelcontextprotocol/inspector node index.js"
+  },
+  "keywords": [
+    "mcp",
+    "mcp server",
+    "nodejs docs",
+    "nodejs core modules",
+    "nodejs core modules docs"
+  ],
+  "author": {
+    "name": "Liran Tal",
+    "email": "liran@lirantal.com",
+    "url": "https://github.com/lirantal"
+  },
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.10.1",
+    "node-fetch": "^3.3.2",
+    "zod": "^3.24.3"
+  },
+  "devDependencies": {
+    "@modelcontextprotocol/inspector": "^0.10.2"
+  }
+}

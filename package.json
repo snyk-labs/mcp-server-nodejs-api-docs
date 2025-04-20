@@ -24,6 +24,7 @@
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.10.1",
     "node-fetch": "^3.3.2",
+    "pino": "^9.6.0",
     "zod": "^3.24.3"
   },
   "devDependencies": {

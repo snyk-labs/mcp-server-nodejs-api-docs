@@ -8,7 +8,7 @@ This project implements a Model Context Protocol (MCP) server that provides acce
 *   Provides MCP tools to query documentation for specific modules, classes, or methods.
 *   Offers a search tool (`node-search`) to find modules or list all available modules with their methods.
 *   Offers a list tool (`node-list`) to get a summary of all available modules.
-*   Logs activity and errors to `/tmp/mcp.log`.
+*   Logs activity and errors to `/tmp/mcp.log` using `pino`.
 
 ## Installation
 
@@ -18,11 +18,10 @@ This project implements a Model Context Protocol (MCP) server that provides acce
     cd <repository_directory>
     ```
 2.  **Install dependencies:**
-
+    This project requires Node.js and npm.
     ```bash
     npm install
     ```
-
 
 ## Usage
 

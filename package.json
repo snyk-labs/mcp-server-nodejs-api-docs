@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "type": "module",
+  "bin": {
+    "mcp-server-nodejs-docs": "./index.js"
+  },
   "description": "A MCP server that provides documentation for Node.js core modules API",
   "scripts": {
     "start": "node index.js --debug",

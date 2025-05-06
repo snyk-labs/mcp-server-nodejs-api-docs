@@ -1,11 +1,11 @@
-import fetch from 'node-fetch';
 import { initLogger } from '../utils/logger.js';
+import { normalizeModuleName } from '../utils/format.js';
 
 const logger = initLogger();
+const url = 'https://nodejs.org/docs/latest/api/all.json';
 
 export async function fetchNodeApiDocs() {
   logger.info({ msg: 'Fetching Node.js API documentation...' });
-  const url = 'https://nodejs.org/docs/latest/api/all.json';
   try {
     const response = await fetch(url);
     if (!response.ok) {
@@ -18,15 +18,6 @@ export async function fetchNodeApiDocs() {
     logger.error({ err: error, msg: `Failed to fetch Node.js API documentation: ${url}` });
     throw error;
   }
-}
-
-export function formatContent(content) {
-  if (!content) return '';
-  return content.replace(/\n/g, '\n\n');
-}
-
-export function normalizeModuleName(name) {
-  return name.toLowerCase().replace(/[_\s-]/g, '');
 }
 
 export function findModuleByName(modules, searchName) {

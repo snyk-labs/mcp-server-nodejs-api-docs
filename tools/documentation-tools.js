@@ -1,5 +1,6 @@
 import { z } from "zod";
-import { formatContent, findModuleByName } from '../services/api-docs-service.js';
+import { findModuleByName } from '../services/api-docs-service.js';
+import { formatContent } from "../utils/format.js";
 import { initLogger } from '../utils/logger.js';
 
 const logger = initLogger();
@@ -73,9 +74,7 @@ export function createSearchTool(server, modules) {
       const foundModule = moduleName ? findModuleByName(modules, moduleName) : null;
       
       if (!foundModule) {
-        let listContent = moduleName ? 
-          `# Module "${moduleName}" not found.\n\n` : 
-          'Available Node.js core modules and their methods:\n\n';
+        let listContent = 'Available Node.js core modules and their methods:\n\n';
         
         modules.forEach(module => {
           listContent += formatModuleSummary(module);

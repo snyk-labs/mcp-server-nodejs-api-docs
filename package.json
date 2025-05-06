@@ -9,7 +9,8 @@
   "description": "A MCP server that provides documentation for Node.js core modules API",
   "scripts": {
     "start": "node index.js --debug",
-    "debug": "npx @modelcontextprotocol/inspector node index.js --debug"
+    "debug": "npx @modelcontextprotocol/inspector node index.js --debug",
+    "test": "node --test __tests__/*"
   },
   "keywords": [
     "mcp",

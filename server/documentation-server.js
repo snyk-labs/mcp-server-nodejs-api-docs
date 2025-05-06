@@ -1,5 +1,5 @@
-import { fetchNodeApiDocs } from '../services/apiDocsService.js';
-import { createModuleTool, createSearchTool, createListTool } from '../tools/documentationTools.js';
+import { fetchNodeApiDocs } from '../services/api-docs-service.js';
+import { createModuleTool, createSearchTool, createListTool } from '../tools/documentation-tools.js';
 import { initLogger } from '../utils/logger.js';
 
 const logger = initLogger();

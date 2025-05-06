@@ -2,8 +2,8 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { initLogger } from './utils/logger.js';
-import { initializeDocumentationServer } from './server/documentationServer.js';
-import { setupErrorHandlers } from './utils/errorHandlers.js';
+import { initializeDocumentationServer } from './server/documentation-server.js';
+import { setupErrorHandlers } from './utils/error-handlers.js';
 
 const logger = initLogger();
 

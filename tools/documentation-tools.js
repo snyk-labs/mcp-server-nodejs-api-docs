@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { formatContent, findModuleByName } from '../services/apiDocsService.js';
+import { formatContent, findModuleByName } from '../services/api-docs-service.js';
 import { initLogger } from '../utils/logger.js';
 
 const logger = initLogger();

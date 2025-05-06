@@ -3,6 +3,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { initLogger } from './utils/logger.js';
 import { initializeDocumentationServer } from './server/documentation-server.js';
+import { initializeNodejsResources } from './server/nodejs-resources.js';
 import { setupErrorHandlers } from './utils/error-handlers.js';
 
 const logger = initLogger();
@@ -25,6 +26,7 @@ logger.info({ msg: 'MCP Server instance created', name: server.name, version: se
 async function startServer() {
   try {
     await initializeDocumentationServer(server);
+    await initializeNodejsResources(server);
     
     // Start receiving messages on stdin and sending messages on stdout
     const transport = new StdioServerTransport();

@@ -1,5 +1,5 @@
 import { fetchNodeApiDocs } from '../services/api-docs-service.js';
-import { createModuleTool, createSearchTool, createListTool } from '../tools/documentation-tools.js';
+import { createModuleTool, createListTool } from '../tools/documentation-tools.js';
 import { createToolPrompts } from '../prompts/documentation-prompts.js';
 import { initLogger } from '../utils/logger.js';
 import { normalizeModuleName } from '../utils/format.js';
@@ -27,7 +27,6 @@ export async function initializeDocumentationServer(server) {
   logger.info({ msg: `Created ${apiDocs.modules?.length} module tools.` });
   
   // Create search and list tools
-  createSearchTool(server, apiDocs.modules, listTools);
   createListTool(server, apiDocs.modules);
   createToolPrompts(server, apiDocs.modules, listTools);
 }

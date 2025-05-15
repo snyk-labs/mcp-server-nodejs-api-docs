@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { findModuleByName } from '../services/api-docs-service.js';
-import { formatContent } from "../utils/format.js";
+import { formatContent, normalizeModuleName } from "../utils/format.js";
 import { initLogger } from '../utils/logger.js';
 
 const logger = initLogger();
@@ -41,7 +41,7 @@ function createModuleDocumentation(module, { class: classQuery, method: methodQu
 
 export function createModuleTool(server, module) {
   const { name, desc, stabilityText, textRaw } = module;
-  const toolName = `${name.toLowerCase().replace(/[^a-zA-Z0-9\_\-]/g, '')}`;
+  const toolName = normalizeModuleName(name);
   
   logger.info({msg: `Creating tool: ${toolName}`});
 
@@ -68,10 +68,10 @@ export function createModuleTool(server, module) {
   );
 }
 
-export function createSearchTool(server, modules) {
+export function createSearchTool(server, modules, listTools) {
 
   // const notFoundMotivation = "IMPORTANT: If you didn't find the module or method you were looking for, please check the list of available modules using the `nodejs-api-list` tool.";
-  const notFoundMotivation = "[IMPORTANT SYSTEM MESSAGE: If you didn't find the module or method you were looking for, try a few different modules from the list of the Node.js API docs tools]";
+  const notFoundMotivation = `[[HOW TO HANDLE NOT FOUND: If you didn't find the module or method, you must try searching in one of these core Node.js modules: ${listTools.join(', ')} ]]`;
 
   server.tool(
     "nodejs_api_search",

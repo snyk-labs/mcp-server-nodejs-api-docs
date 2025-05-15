@@ -4,5 +4,5 @@ export function formatContent(content) {
   }
   
   export function normalizeModuleName(name) {
-    return name.toLowerCase().replace(/[_\s-]/g, '');
+    return name.toLowerCase().replace(/[^a-zA-Z0-9\_\-]/g, '')
   }

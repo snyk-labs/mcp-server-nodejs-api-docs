@@ -47,6 +47,8 @@ export function createModuleTool(server, module) {
 
   const descFormatted = `Node.js API: ${textRaw}`
 
+  const notFoundMotivation = `[[INSTRUCTIONS FOR NOT FOUND: If you didn't find the module or method, you should try searching in one of the other core Node.js modules ]]`;
+
   server.tool(
     toolName,
     descFormatted,
@@ -57,7 +59,8 @@ export function createModuleTool(server, module) {
     async (params) => {
       logger.info({ msg: `Tool execution started: ${toolName}`, params });
       try {
-        const content = createModuleDocumentation(module, params);
+        let content = createModuleDocumentation(module, params);
+        content += `\n${notFoundMotivation}\n\n`;
         logger.info({ msg: `Tool execution successful: ${toolName}` });
         return { content: [{ type: "text", text: content }] };
       } catch (error) {
@@ -70,7 +73,7 @@ export function createModuleTool(server, module) {
 
 export function createSearchTool(server, modules, listTools) {
 
-  const notFoundMotivation = `[[HOW TO HANDLE NOT FOUND: If you didn't find the module or method, you must try searching in one of these core Node.js modules: ${listTools.join(', ')} ]]`;
+  const notFoundMotivation = `[[INSTRUCTIONS FOR NOT FOUND: If you didn't find the module or method, you must try searching in one of these core Node.js modules: ${listTools.join(', ')} ]]`;
 
   server.tool(
     "nodejs_api_search",

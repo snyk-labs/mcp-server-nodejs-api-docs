@@ -70,7 +70,6 @@ export function createModuleTool(server, module) {
 
 export function createSearchTool(server, modules, listTools) {
 
-  // const notFoundMotivation = "IMPORTANT: If you didn't find the module or method you were looking for, please check the list of available modules using the `nodejs-api-list` tool.";
   const notFoundMotivation = `[[HOW TO HANDLE NOT FOUND: If you didn't find the module or method, you must try searching in one of these core Node.js modules: ${listTools.join(', ')} ]]`;
 
   server.tool(

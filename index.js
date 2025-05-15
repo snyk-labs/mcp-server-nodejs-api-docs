@@ -10,7 +10,8 @@ const logger = initLogger();
 
 // Create an MCP server
 const server = new McpServer({
-  name: "Node.js API Documentation",
+  name: "nodejs-api-docs-for-modules-and-stdlib-methods",
+  description: "Node.js API Documentation for modules and stdlib methods",
   version: "1.0.0",
   capabilities: {
     resources: {},

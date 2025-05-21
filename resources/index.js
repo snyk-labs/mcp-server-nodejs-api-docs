@@ -33,7 +33,7 @@ export async function initializeResources(server) {
       name: "Node.js Releases Schedule Chart",
       description: "A chart showing the release schedule of Node.js versions.",
       mimeType: "image/svg+xml",
-      func: async (request) => {
+      handler: async (request) => {
         logger.info({ msg: "Resource URI Access:", uri: request.params.uri });
 
         return {
@@ -69,7 +69,7 @@ export async function initializeResources(server) {
     });
 
     if (resource) {
-      return await resource.func(request);
+      return await resource.handler(request);
     }
 
     throw new Error(`Resource not found: ${request.params.uri}`);

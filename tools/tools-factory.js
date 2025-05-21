@@ -1,8 +1,8 @@
 import { initLogger } from "../utils/logger.js";
-import { normalizeModuleName } from "../utils/format.js";
-import { formatModuleSummary, createModuleDocumentation } from "../services/docs-formatter-service.js";
+import { DocsFormatter } from "../services/docs-formatter-service.js";
 
 const logger = initLogger();
+const docsFormatter = new DocsFormatter();
 
 export function createSearchTool(modules) {
   return {
@@ -20,7 +20,7 @@ export function createSearchTool(modules) {
       let listContent = "Available Node.js core modules and their methods:\n\n";
 
       modules.forEach((module) => {
-        listContent += formatModuleSummary(module);
+        listContent += docsFormatter.formatModuleSummary(module);
       });
 
       return { content: [{ type: "text", text: listContent }] };
@@ -33,7 +33,7 @@ export function createModuleTools(modules) {
 
   modules.forEach((module) => {
     const { name, textRaw } = module;
-    const toolName = normalizeModuleName(name);
+    const toolName = docsFormatter.normalizeModuleName(name);
 
     logger.info({ msg: `Creating tool: ${toolName}` });
 
@@ -59,7 +59,7 @@ export function createModuleTools(modules) {
       async handler(params) {
         logger.info({ msg: `Tool execution started: ${toolName}`, params });
         try {
-          let content = createModuleDocumentation(module, params);
+          let content = docsFormatter.createModuleDocumentation(module, params);
           logger.info({ msg: `Tool execution successful: ${toolName}` });
           return { content: [{ type: "text", text: content }] };
         } catch (error) {

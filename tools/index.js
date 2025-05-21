@@ -3,20 +3,17 @@ import {
   CallToolRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
 
-import { getApiDocsModules } from "../services/api-docs-service.js";
 import { createSearchTool, createModuleTools } from "./tools-factory.js";
 import { initLogger } from "../utils/logger.js";
 
 const logger = initLogger();
 
 export async function initializeTools(server) {
-  const { modules } = await getApiDocsModules();
-
   // Create the search tool
-  const searchTool = createSearchTool(modules);
+  const searchTool = await createSearchTool();
   
   // Create individual module tools
-  const moduleTools = createModuleTools(modules);
+  const moduleTools = await createModuleTools();
 
   // Combine all tools
   const tools = {

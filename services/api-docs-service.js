@@ -1,47 +1,70 @@
 import { initLogger } from '../utils/logger.js';
+import { DocsFormatter } from './docs-formatter-service.js';
 
-const logger = initLogger();
-const url = 'https://nodejs.org/docs/latest/api/all.json';
+export class ApiDocsService {
+  constructor() {
+    this.logger = initLogger();
+    this.docsFormatter = new DocsFormatter();
+    this.url = 'https://nodejs.org/docs/latest/api/all.json';
+    this.modulesData = null;
+  }
 
-let modulesData = null;
-
-async function fetchNodeApiDocs() {
-  logger.info({ msg: 'Fetching Node.js API documentation...' });
-  try {
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status} ${response.statusText}`);
+  async fetchNodeApiDocs() {
+    this.logger.info({ msg: 'Fetching Node.js API documentation...' });
+    try {
+      const response = await fetch(this.url);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status} ${response.statusText}`);
+      }
+      const data = await response.json();
+      this.logger.info({ msg: 'Successfully fetched Node.js API documentation', url: this.url });
+      return data;
+    } catch (error) {
+      this.logger.error({ err: error, msg: `Failed to fetch Node.js API documentation: ${this.url}` });
+      throw error;
     }
-    const data = await response.json();
-    logger.info({ msg: 'Successfully fetched Node.js API documentation', url });
-    return data;
-  } catch (error) {
-    logger.error({ err: error, msg: `Failed to fetch Node.js API documentation: ${url}` });
-    throw error;
-  }
-}
-
-export async function getApiDocsModules() {
-
-  if (modulesData) {
-    // return from cached data
-    return modulesData;
   }
 
-  const apiDocs = await fetchNodeApiDocs();
-  
-  // Remove entries without Class or Method
-  const originalCount = apiDocs.modules?.length;
-  apiDocs.modules = apiDocs.modules.filter(module => 
-    module?.classes?.length > 0 || module?.methods?.length > 0
-  );
-  logger.info({ msg: `Modules count: ${originalCount}` });
-
-  // persist the data in the singleton before returning
-  modulesData = apiDocs.modules;
-
-  return {
-    modules: apiDocs.modules
+  normalizeModuleName(name) {
+    return this.docsFormatter.normalizeModuleName(name);
   }
 
+  async getApiDocsModules() {
+    if (this.modulesData) {
+      // return from cached data
+      return this.modulesData;
+    }
+
+    const apiDocs = await this.fetchNodeApiDocs();
+    
+    // Remove entries without Class or Method
+    const originalCount = apiDocs.modules?.length;
+    apiDocs.modules = apiDocs.modules.filter(module => 
+      module?.classes?.length > 0 || module?.methods?.length > 0
+    );
+    this.logger.info({ msg: `Modules count: ${originalCount}` });
+
+    // persist the data in the class instance before returning
+    this.modulesData = {
+      modules: apiDocs.modules
+    }
+
+    return this.modulesData;
+  }
+
+  async getFormattedModuleDoc(moduleData, options = {}) {
+    if (!moduleData) {
+      return '';
+    }
+
+    return this.docsFormatter.createModuleDocumentation(moduleData, options);
+  }
+
+  async getFormattedModuleSummary(moduleData) {    
+    if (!moduleData) {
+      return '';
+    }
+
+    return this.docsFormatter.formatModuleSummary(moduleData);
+  }
 }

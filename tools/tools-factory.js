@@ -1,10 +1,12 @@
 import { initLogger } from "../utils/logger.js";
-import { DocsFormatter } from "../services/docs-formatter-service.js";
+import { ApiDocsService } from "../services/api-docs-service.js";
 
 const logger = initLogger();
-const docsFormatter = new DocsFormatter();
+const apiDocsService = new ApiDocsService();
 
-export function createSearchTool(modules) {
+export async function createSearchTool() {
+  const { modules } = await apiDocsService.getApiDocsModules();
+
   return {
     name: "search-nodejs-modules-api-documentation",
     description:
@@ -19,21 +21,22 @@ export function createSearchTool(modules) {
       });
       let listContent = "Available Node.js core modules and their methods:\n\n";
 
-      modules.forEach((module) => {
-        listContent += docsFormatter.formatModuleSummary(module);
-      });
+      for (const module of modules) {
+        listContent += await apiDocsService.getFormattedModuleSummary(module);
+      }
 
       return { content: [{ type: "text", text: listContent }] };
     },
   };
 }
 
-export function createModuleTools(modules) {
+export async function createModuleTools() {
   let tools = {};
+  const { modules } = await apiDocsService.getApiDocsModules();
 
   modules.forEach((module) => {
     const { name, textRaw } = module;
-    const toolName = docsFormatter.normalizeModuleName(name);
+    const toolName = apiDocsService.normalizeModuleName(name);
 
     logger.info({ msg: `Creating tool: ${toolName}` });
 
@@ -59,7 +62,7 @@ export function createModuleTools(modules) {
       async handler(params) {
         logger.info({ msg: `Tool execution started: ${toolName}`, params });
         try {
-          let content = docsFormatter.createModuleDocumentation(module, params);
+          let content = await apiDocsService.getFormattedModuleDoc(module, params);
           logger.info({ msg: `Tool execution successful: ${toolName}` });
           return { content: [{ type: "text", text: content }] };
         } catch (error) {

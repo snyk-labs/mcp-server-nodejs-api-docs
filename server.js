@@ -2,6 +2,7 @@ import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { initLogger } from "./utils/logger.js";
 import { initializeResources } from "./resources/index.js";
 import { initializePrompts } from "./prompts/index.js";
+import { initializeTools } from "./tools/index.js";
 
 const logger = initLogger();
 
@@ -24,6 +25,7 @@ export async function createMcpServer() {
 
   await initializePrompts(server);
   await initializeResources(server);
+  await initializeTools(server);
 
   logger.info({
     msg: "MCP Server instance created",

@@ -1,5 +1,4 @@
 import { initLogger } from '../utils/logger.js';
-import { normalizeModuleName } from '../utils/format.js';
 
 const logger = initLogger();
 const url = 'https://nodejs.org/docs/latest/api/all.json';

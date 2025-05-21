@@ -1,6 +1,7 @@
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { initLogger } from "./utils/logger.js";
 import { initializeResources } from "./resources/index.js";
+import { initializePrompts } from "./prompts/index.js";
 
 const logger = initLogger();
 
@@ -21,6 +22,7 @@ export async function createMcpServer() {
     }
   );
 
+  await initializePrompts(server);
   await initializeResources(server);
 
   logger.info({

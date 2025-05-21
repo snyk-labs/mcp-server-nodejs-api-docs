@@ -46,12 +46,3 @@ export async function getApiDocsModules() {
   }
 
 }
-
-export function findModuleByName(modules, searchName) {
-  const normalizedSearch = normalizeModuleName(searchName);
-  return modules.find(module => 
-    normalizeModuleName(module.name) === normalizedSearch ||
-    normalizeModuleName(module.textRaw) === normalizedSearch ||
-    (module.displayName && normalizeModuleName(module.displayName) === normalizedSearch)
-  );
-}

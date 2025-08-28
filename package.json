@@ -27,7 +27,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.11.4",
-    "pino": "^9.7.0",
+    "pino": "^9.8.0",
     "zod": "^3.25.7"
   },
   "devDependencies": {
